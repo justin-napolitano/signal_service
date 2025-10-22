@@ -1,37 +1,30 @@
-# docker-compose.yml
 version: "3.9"
-networks:
-  notifnet:
-    driver: bridge
 
 services:
   signal-api:
     image: bbernhard/signal-cli-rest-api:latest
     restart: unless-stopped
-    networks: [notifnet]
-    # bind to localhost only; other local containers can still reach it via the network name
     ports:
-      - "127.0.0.1:${SIGNAL_API_PORT:-8085}:8085"
+      - "127.0.0.1:8085:8080"   # host 8085 -> container 8080 (localhost only)
+    env_file:
+      - .env                  # 👈 this injects .env into the container’s environment
     environment:
       MODE: "${SIGNAL_API_MODE:-native}"
       TZ: "${TZ:-UTC}"
     volumes:
       - "${SIGNAL_DATA_DIR:-./signal-cli}:/home/.local/share/signal-cli"
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8085/v1/about"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-    notifier-gateway:
+
+  notifier-gateway:
     build: ./notifier-gateway
     restart: unless-stopped
-    networks: [notifnet]
+    env_file:
+      - .env                  # 👈 this injects .env into the container’s environment 
     environment:
-      SIGNAL_API_BASE: "http://signal-api:8085"
-      SIGNAL_NUMBER: "${SIGNAL_NUMBER}"          # your linked account
-      GATEWAY_TOKEN: "${GATEWAY_TOKEN}"          # simple bearer token for auth
+      SIGNAL_API_BASE: "http://signal-api:8080"
+      SIGNAL_NUMBER: "${SIGNAL_NUMBER}"
+      GATEWAY_TOKEN: "${GATEWAY_TOKEN}"
       TZ: "${TZ:-UTC}"
     ports:
-      - "127.0.0.1:${GATEWAY_PORT:-8787}:8787"   # local only
+      - "127.0.0.1:${GATEWAY_PORT:-8787}:8787"  # host-only
     depends_on:
       - signal-api

@@ -1,44 +1,45 @@
 # Signal Notifier Gateway
 
-A self-hosted **Signal notification gateway** built with Docker Compose.  
-This project provides a lightweight, headless service for sending messages to Signal via simple HTTP POST requests.
-
----
-
-## Overview
-
-The stack includes two containers:
-
-| Service | Description | Port |
-|----------|--------------|------|
-| **signal-api** | [`signal-cli-rest-api`](https://github.com/bbernhard/signal-cli-rest-api) container providing REST access to Signal | 8085 (localhost) |
-| **notifier-gateway** | Flask service that exposes a `/notify` endpoint and forwards messages to Signal | 8787 (localhost) |
-
-The gateway is intended for automation and internal systems that need reliable push notifications without relying on third-party APIs.
+A self-hosted Signal notification gateway built with Docker Compose. This project provides a lightweight, headless service for sending messages to Signal via simple HTTP POST requests.
 
 ---
 
 ## Features
 
-- Self-hosted; no external dependencies  
-- REST endpoint for sending messages or attachments  
-- Secure access via Bearer token  
-- Automatic restart with `restart: unless-stopped`  
-- systemd integration for boot persistence  
+- Self-hosted; no external dependencies
+- REST endpoint for sending messages or attachments
+- Secure access via Bearer token authentication
+- Automatic restart with `restart: unless-stopped`
+- systemd integration for boot persistence (assumed)
 - Tested on Ubuntu 22.04+
 
 ---
 
-## Quick start
+## Tech Stack
 
-### 1. Clone the repository
+- Python (Flask) for the notifier gateway service
+- Docker Compose for container orchestration
+- `signal-cli-rest-api` container for Signal REST access
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Docker and Docker Compose installed
+- OpenSSL for token generation
+
+### Installation and Run
+
+1. Clone the repository
 
 ```bash
-git clone https://github.com/<yourname>/signal_service.git
+git clone https://github.com/justin-napolitano/signal_service.git
 cd signal_service
 ```
 
-### 2. Create `.env`
+2. Create `.env` file based on `env-example` (or use the example below)
 
 ```bash
 TZ=America/New_York
@@ -50,113 +51,65 @@ GATEWAY_TOKEN=$(openssl rand -hex 32)
 GATEWAY_PORT=8787
 ```
 
-### 3. Build and run
+3. Build and start the services
 
 ```bash
 docker compose build
 docker compose up -d
 ```
 
-### 4. Link your Signal account
+4. Link your Signal account
+
+Set up an SSH tunnel to forward the Signal API port:
 
 ```bash
 ssh -N -L 8085:127.0.0.1:8085 user@your-server
 ```
 
-Open in browser:
+Open in your browser:
+
 ```
 http://localhost:8085/v1/qrcodelink?device_name=notifier
 ```
+
 Then on your phone:
-> Signal → Settings → Linked Devices → + → Scan QR code
 
-The linked session is stored in `signal-cli/`.
+- Open Signal → Settings → Linked Devices → + → Scan QR code
 
----
-
-## Send a test message
-
-If you have sourced `.env`:
-
-```bash
-curl -X POST "http://127.0.0.1:${GATEWAY_PORT}/notify"   -H "Authorization: Bearer ${GATEWAY_TOKEN}"   -H "Content-Type: application/json"   -d "{
-    \"to\": \"${SIGNAL_NUMBER}\",
-    \"message\": \"Signal gateway test message\"
-  }"
-```
+The linked session data is persisted in the `signal-cli/` directory.
 
 ---
 
-## Service management (systemd)
+## Project Structure
 
-To enable automatic startup at boot:
-
-```bash
-sudo nano /etc/systemd/system/signal-notifier.service
+```
+signal_service/
+├─ docker-compose.yml          # Docker Compose configuration
+├─ .env                       # Environment variables (not committed)
+├─ signal-cli/                # Persistent Signal link data
+└─ notifier-gateway/
+   ├─ Dockerfile              # Dockerfile for notifier gateway
+   └─ app.py                  # Flask app implementing notification API
 ```
 
-```ini
-[Unit]
-Description=Signal Notifier Gateway
-After=network-online.target docker.service
-Wants=network-online.target docker.service
-
-[Service]
-User=cobra
-Group=docker
-WorkingDirectory=/home/cobra/Repos/justin-napolitano/signal_service
-Environment=COMPOSE_PROJECT_NAME=signal_service
-EnvironmentFile=/home/cobra/Repos/justin-napolitano/signal_service/.env
-ExecStart=/usr/bin/docker compose up -d
-ExecStop=/usr/bin/docker compose down
-Type=oneshot
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable and start:
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable signal-notifier
-sudo systemctl start signal-notifier
-```
+- `docker-compose.yml` defines two services: `signal-api` (Signal REST API container) and `notifier-gateway` (Flask service).
+- `.env` contains configuration variables such as Signal number, tokens, and ports.
+- `signal-cli/` stores persistent Signal session data.
+- `notifier-gateway/app.py` implements `/notify` and `/healthz` endpoints with token-based authentication.
 
 ---
 
-## Security notes
+## Future Work / Roadmap
 
-- Bind all ports to `127.0.0.1` unless needed externally.  
-- Rotate `GATEWAY_TOKEN` regularly.  
-- Limit permissions on `.env` and `signal-cli/`.  
-- Avoid exposing the service publicly.
-
----
-
-## Example integrations
-
-```bash
-curl -sS -X POST http://127.0.0.1:8787/notify   -H "Authorization: Bearer ${GATEWAY_TOKEN}"   -H "Content-Type: application/json"   -d "{
-    \"to\": \"${SIGNAL_NUMBER}\",
-    \"message\": \"Build complete on $(hostname)\"
-  }"
-```
-
-This allows for integration with:
-
-- CI/CD pipelines  
-- Monitoring or alerting systems  
-- Personal scripts or cron jobs
+- Add support for inbound message forwarding to an external service (partially implemented but not documented).
+- Enhance security with TLS support and improved token management.
+- Add support for group messaging and richer attachment types.
+- Provide detailed usage examples and client libraries.
+- Extend platform support beyond Ubuntu 22.04.
+- Add automated tests and CI/CD pipelines.
 
 ---
 
 ## License
 
-This project is released under the [MIT License](LICENSE).
-
----
-
-**Author:** Justin Napolitano  
-**Last updated:** October 2025
+_Assumed MIT or similar open source license (not specified)._

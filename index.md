@@ -1,12 +1,27 @@
 ---
-slug: "github-signal-service"
-title: "signal_service"
-repo: "justin-napolitano/signal_service"
-githubUrl: "https://github.com/justin-napolitano/signal_service"
-generatedAt: "2025-11-23T09:37:57.679724Z"
-source: "github-auto"
+slug: github-signal-service
+title: Self-Hosted Signal Notifier Gateway Using Docker and signal-cli-rest-api
+repo: justin-napolitano/signal_service
+githubUrl: https://github.com/justin-napolitano/signal_service
+generatedAt: '2025-11-23T09:37:57.679724Z'
+source: github-auto
+summary: >-
+  Technical overview of a Docker-based Signal notifier gateway providing authenticated HTTP
+  endpoints for sending Signal messages via signal-cli-rest-api.
+tags:
+  - signal-cli
+  - signal
+  - docker
+  - rest-api
+  - automation
+  - notifier-gateway
+seoPrimaryKeyword: signal notifier gateway
+seoSecondaryKeywords:
+  - signal-cli-rest-api
+  - docker-compose
+  - signal messaging integration
+seoOptimized: true
 ---
-
 
 # Signal Notifier Gateway: Technical Overview and Implementation Notes
 

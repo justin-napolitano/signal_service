@@ -21,6 +21,11 @@ seoSecondaryKeywords:
   - docker-compose
   - signal messaging integration
 seoOptimized: true
+topicFamily: automation
+topicFamilyConfidence: 0.95
+topicFamilyNotes: >-
+  The post focuses on automating Signal message sending using Docker containers and a REST API
+  gateway, fitting well within the automation family which includes docker and scripting workflows.
 ---
 
 # Signal Notifier Gateway: Technical Overview and Implementation Notes
@@ -108,3 +113,4 @@ curl -X POST "http://127.0.0.1:${GATEWAY_PORT}/notify" \
 This project provides a practical, minimal solution for integrating Signal messaging into internal automation workflows. By leveraging containerization and a REST API wrapper around Signal CLI, it abstracts the complexity of Signal's native client and enables secure, programmatic message sending. The design prioritizes simplicity, local control, and minimal dependencies, making it suitable for self-hosted environments.
 
 Future work can enhance security, inbound message processing, and usability to better support production use cases.
+

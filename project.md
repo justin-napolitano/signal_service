@@ -7,8 +7,8 @@ githubUrl: https://github.com/justin-napolitano/signal_service
 generatedAt: '2025-11-24T21:36:22.289Z'
 source: github-auto
 summary: >-
-  Build a lightweight Signal notification service using Docker Compose,
-  featuring REST access and secure authentication.
+  Build a lightweight Signal notification service using Docker Compose, featuring REST access and
+  secure authentication.
 tags:
   - docker-compose
   - flask
@@ -23,8 +23,8 @@ seoSecondaryKeywords:
   - http POST signal
   - secure message gateway
 seoOptimized: true
-topicFamily: null
-topicFamilyConfidence: null
+topicFamily: automation
+topicFamilyConfidence: 0.9
 kind: project
 entryLayout: project
 showInProjects: true
@@ -146,3 +146,4 @@ signal_service/
 ## License
 
 _Assumed MIT or similar open source license (not specified)._
+

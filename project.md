@@ -1,19 +1,28 @@
 ---
 slug: github-signal-service
 id: github-signal-service
-title: Signal Notifier Gateway
+title: Self-Hosted Signal Notification Gateway with Docker Compose
 repo: justin-napolitano/signal_service
 githubUrl: https://github.com/justin-napolitano/signal_service
 generatedAt: '2025-11-24T21:36:22.289Z'
 source: github-auto
 summary: >-
-  A self-hosted Signal notification gateway built with Docker Compose. This
-  project provides a lightweight, headless service for sending messages to
-  Signal via simple HTTP POST requests.
-tags: []
-seoPrimaryKeyword: ''
-seoSecondaryKeywords: []
-seoOptimized: false
+  Build a lightweight Signal notification service using Docker Compose,
+  featuring REST access and secure authentication.
+tags:
+  - docker-compose
+  - flask
+  - signal-cli
+  - python
+  - self-hosted
+seoPrimaryKeyword: self-hosted signal notification gateway
+seoSecondaryKeywords:
+  - docker signal service
+  - signal-cli integration
+  - flask notification service
+  - http POST signal
+  - secure message gateway
+seoOptimized: true
 topicFamily: null
 topicFamilyConfidence: null
 kind: project
